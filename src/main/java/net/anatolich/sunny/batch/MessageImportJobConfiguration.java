@@ -2,37 +2,28 @@ package net.anatolich.sunny.batch;
 
 import net.anatolich.sunny.batch.smsbackuprestore.Message;
 import net.anatolich.sunny.batch.smsbackuprestore.MessageConverter;
+import net.anatolich.sunny.batch.smsbackuprestore.MessageReader;
 import net.anatolich.sunny.domain.SmsMessage;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 @EnableBatchProcessing
-@Profile("import")
-public class SmsMessageImportBatchConfiguration {
+public class MessageImportJobConfiguration {
 
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
@@ -61,36 +52,24 @@ public class SmsMessageImportBatchConfiguration {
         return new MessageConverter();
     }
 
-    @Bean
-    public StaxEventItemReader<Message> smsBackupRestoreXmlReader() {
-        final StaxEventItemReader<Message> reader = new StaxEventItemReader<>();
-        reader.setResource(new ClassPathResource("smsbackuprestore/messages.xml"));
-        reader.setFragmentRootElementName("sms");
-        reader.setUnmarshaller(smsMarshaller());
-        return reader;
-
-    }
-
-    @Bean
-    public Jaxb2Marshaller smsMarshaller() {
-        final Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setClassesToBeBound(Message.class);
-        return marshaller;
+    @Bean @JobScope
+    public MessageReader messageReader() {
+        return new MessageReader();
     }
 
     @Bean
     public Step importStep() {
         return stepBuilderFactory.get("importStep")
                 .<Message, SmsMessage>chunk(100)
-                .reader(smsBackupRestoreXmlReader())
+                .reader(messageReader())
                 .processor(messageConverter())
                 .writer(smsMessageWriter())
                 .build();
     }
 
-    @Bean
+    @Bean(name = "importMessagesJob")
     public Job importMessagesJob() {
-        return jobBuilderFactory.get("importFromSmsBackupRestore")
+        return jobBuilderFactory.get("importMessagesJob")
                 .incrementer(new RunIdIncrementer())
                 .flow(importStep())
                 .end()

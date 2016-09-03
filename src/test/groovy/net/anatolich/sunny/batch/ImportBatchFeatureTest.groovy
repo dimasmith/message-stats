@@ -1,13 +1,13 @@
 package net.anatolich.sunny.batch
 
 import org.springframework.batch.core.BatchStatus
+import org.springframework.batch.core.JobParametersBuilder
 import org.springframework.batch.test.JobLauncherTestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.io.Resource
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.jdbc.JdbcTestUtils
 import spock.lang.Specification
@@ -15,8 +15,7 @@ import spock.lang.Specification
 import javax.sql.DataSource
 
 @SpringBootTest
-@ContextConfiguration(classes = [BatchTestConfiguration])
-@ActiveProfiles("import")
+@ContextConfiguration(classes = [net.anatolich.sunny.batch.BatchTestConfiguration])
 class ImportBatchFeatureTest extends Specification {
 
     public static final String MESSAGE_TABLE_NAME = 'SMS_MESSAGE'
@@ -40,7 +39,8 @@ class ImportBatchFeatureTest extends Specification {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, MESSAGE_TABLE_NAME)
 
         when: 'messages are imported'
-        def status = jobLauncherTestUtils.launchJob().getStatus()
+        def parameters = new JobParametersBuilder().addString('url', messageFile.getURL().toExternalForm()).toJobParameters()
+        def status = jobLauncherTestUtils.launchJob(parameters).getStatus()
 
         then: 'job is completed'
         status == BatchStatus.COMPLETED

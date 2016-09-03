@@ -20,12 +20,18 @@ class CountBySenderFeatureTest extends Specification {
     @Autowired
     StatsService statsService
 
+    void setup() {
+        messageRepository.deleteAll()
+    }
+
     def "import messages and count by sender"() {
         setup: 'create test messages'
         def messages = [createIncomingMessage(), createOutgoingMessage(), createIncomingMessage()]
+
         when: 'messages are imported'
         importMessage(messages)
         def directionStats = countByDirection()
+
         then: 'messages calculated by direction'
         directionStats.incoming == 2
         directionStats.outgoing == 1

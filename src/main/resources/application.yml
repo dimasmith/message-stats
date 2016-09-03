@@ -3,3 +3,6 @@ spring:
     hibernate:
       ddl-auto: validate
     generate-ddl: false
+  batch:
+    job:
+      enabled: false
