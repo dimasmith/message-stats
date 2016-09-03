@@ -1,59 +1,48 @@
 package net.anatolich.sunny
 
-import net.anatolich.sunny.domain.Direction
-import net.anatolich.sunny.domain.SenderStats
-import net.anatolich.sunny.domain.SmsMessage
-import net.anatolich.sunny.repository.SmsMessageRepository
-import net.anatolich.sunny.service.StatsService
+import net.anatolich.sunny.batch.ImportJobLauncher
+import org.hamcrest.Matchers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.io.Resource
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(classes = [SmsStatsApplication])
+@AutoConfigureMockMvc
+@ContextConfiguration
 class CountBySenderFeatureTest extends Specification {
 
     @Autowired
-    SmsMessageRepository messageRepository
+    ImportJobLauncher messageImporter
 
     @Autowired
-    StatsService statsService
+    MockMvc mockMvc
 
-    void setup() {
-        messageRepository.deleteAll()
-    }
+    @Value("classpath:smsbackuprestore/messages.xml")
+    Resource sampleMessages
 
-    def "import messages and count by sender"() {
-        setup: 'create test messages'
-        def messages = [createIncomingMessage(), createOutgoingMessage(), createIncomingMessage()]
 
-        when: 'messages are imported'
-        importMessage(messages)
-        def directionStats = countByDirection()
+    def "count messages by sender"() {
+        setup: 'import example messages'
+        messageImporter.importMessages(sampleMessages.getURL().toExternalForm())
 
-        then: 'messages calculated by direction'
-        directionStats.incoming == 2
-        directionStats.outgoing == 1
-    }
+        when: 'get statistics from endpoint'
+        def response = mockMvc.perform(get('/v1/stats/bySender').accept(APPLICATION_JSON_UTF8))
 
-    SenderStats countByDirection() {
-        return statsService.countByDirection()
-    }
-
-    def importMessage(Collection<SmsMessage> smsMessages) {
-        messageRepository.save(smsMessages)
-    }
-
-    SmsMessage createOutgoingMessage() {
-        return SmsMessage.builder()
-                .direction(Direction.OUT)
-                .build()
-    }
-
-    SmsMessage createIncomingMessage() {
-        return SmsMessage.builder()
-                .direction(Direction.IN)
-                .build()
+        then: 'statistics counted correctly'
+        response
+            .andExpect(status().isOk())
+            .andExpect(jsonPath('incoming', Matchers.is(15)))
+            .andExpect(jsonPath('outgoing', Matchers.is(12)))
     }
 }
