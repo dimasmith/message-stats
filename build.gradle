@@ -34,6 +34,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.projectlombok:lombok')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework:spring-oxm')
+    compile('org.flywaydb:flyway-core:4.0.3')
     runtime('com.h2database:h2')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     /* Spock framework */
@@ -43,5 +45,6 @@ dependencies {
     testCompile('com.athaydes:spock-reports:1.2.12') {
         transitive = false
     }
+    testCompile('org.springframework.batch:spring-batch-test')
 }
 

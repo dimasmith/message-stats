@@ -1,19 +1,22 @@
 package net.anatolich.sunny.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Builder
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class SmsMessage {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Integer id;
+    @Enumerated(EnumType.STRING)
     private Direction direction;
-
 }
