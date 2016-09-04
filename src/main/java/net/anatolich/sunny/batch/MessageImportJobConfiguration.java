@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,14 +38,17 @@ public class MessageImportJobConfiguration {
     @Bean
     public JdbcBatchItemWriter<SmsMessage> smsMessageWriter() {
         final JdbcBatchItemWriter<SmsMessage> writer = new JdbcBatchItemWriter<>();
-        writer.setItemSqlParameterSourceProvider(message -> {
-            final Map<String, Object> values = new HashMap<>();
-            values.put("direction", message.getDirection().name());
-            return new MapSqlParameterSource(values);
-        });
-        writer.setSql("INSERT INTO SMS_MESSAGE (direction) VALUES (:direction)");
+        writer.setItemSqlParameterSourceProvider(MessageImportJobConfiguration::mapMessageParameters);
+        writer.setSql("INSERT INTO SMS_MESSAGE (direction, delivery_time) VALUES (:direction, :deliveryTime)");
         writer.setDataSource(dataSource);
         return writer;
+    }
+
+    private static MapSqlParameterSource mapMessageParameters(SmsMessage message) {
+        final Map<String, Object> values = new HashMap<>();
+        values.put("direction", message.getDirection().name());
+        values.put("deliveryTime", Timestamp.valueOf(message.getDeliveryTime()));
+        return new MapSqlParameterSource(values);
     }
 
     @Bean

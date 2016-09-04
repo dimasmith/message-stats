@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
+import java.time.Instant;
+
 @Component
 public class ImportJobLauncher {
 
@@ -29,7 +32,10 @@ public class ImportJobLauncher {
      * @param url url of xml file with resources
      */
     public void importMessages(String url) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        final JobParameters jobParameters = new JobParametersBuilder().addString("url", url).toJobParameters();
+        final JobParameters jobParameters = new JobParametersBuilder()
+                .addString("url", url)
+                .addDate("invocationDate", Date.from(Instant.now()))
+                .toJobParameters();
         jobLauncher.run(importJob, jobParameters);
     }
 }
