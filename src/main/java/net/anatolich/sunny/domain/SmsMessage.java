@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -19,4 +20,5 @@ public class SmsMessage {
     private Integer id;
     @Enumerated(EnumType.STRING)
     private Direction direction;
+    private LocalDateTime deliveryTime;
 }
