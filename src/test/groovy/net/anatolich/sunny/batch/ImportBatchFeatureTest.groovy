@@ -1,5 +1,6 @@
 package net.anatolich.sunny.batch
 
+import net.anatolich.sunny.repository.SmsMessageRepository
 import org.springframework.batch.core.BatchStatus
 import org.springframework.batch.core.JobParametersBuilder
 import org.springframework.batch.test.JobLauncherTestUtils
@@ -26,7 +27,7 @@ class ImportBatchFeatureTest extends Specification {
     DataSource dataSource
 
     @Value("classpath:smsbackuprestore/messages.xml")
-    Resource messageFile;
+    Resource messagesFile;
 
     private JdbcTemplate jdbcTemplate
 
@@ -39,7 +40,7 @@ class ImportBatchFeatureTest extends Specification {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, MESSAGE_TABLE_NAME)
 
         when: 'messages are imported'
-        def parameters = new JobParametersBuilder().addString('url', messageFile.getURL().toExternalForm()).toJobParameters()
+        def parameters = new JobParametersBuilder().addString('url', messagesFile.getURL().toExternalForm()).toJobParameters()
         def status = jobLauncherTestUtils.launchJob(parameters).getStatus()
 
         then: 'job is completed'

@@ -5,6 +5,7 @@ import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
@@ -22,12 +23,17 @@ public class MessageReader implements ItemStreamReader<Message> {
     }
 
     @PostConstruct
-    public void setResource() {
+    public void populateResourceFromJobParameter() {
         try {
-            reader.setResource(new UrlResource(url));
+            final UrlResource resource = new UrlResource(url);
+            setResource(resource);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setResource(Resource resource) {
+        reader.setResource(resource);
     }
 
     @Override

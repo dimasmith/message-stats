@@ -1,4 +1,5 @@
 CREATE TABLE SMS_MESSAGE (
   id INTEGER IDENTITY PRIMARY KEY,
-  direction VARCHAR
+  direction VARCHAR(10),
+  delivery_time TIMESTAMP
 );
