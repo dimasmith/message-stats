@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 
 @SpringBootTest
 @ContextConfiguration
-class MessageImportJobConfigurationTest extends Specification {
+class MessageDatabaseWriterTest extends Specification {
 
     @Autowired
     ItemWriter messageWriter

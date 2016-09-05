@@ -12,30 +12,17 @@ class MessageConverterTest extends Specification {
 
     def "convert message direction"() {
         given: 'incoming and outgoing message'
-        def incoming = Message.builder()
-                .type('1').build()
-        def outgoing = Message.builder()
-                .type('2').build()
+        def incoming = new Message('1', System.currentTimeMillis());
+        def outgoing = new Message('2', System.currentTimeMillis());
 
         expect: 'numeric types properly mapped to direction'
         converter.process(incoming).direction == Direction.IN
         converter.process(outgoing).direction == Direction.OUT
     }
 
-    def "exception on unsupported direction"() {
-        given: 'message with unknown direction'
-        def unknown = Message.builder().type('3').build()
-
-        when: 'converting to message'
-        converter.process(unknown)
-
-        then: 'exception thrown'
-        thrown(IllegalArgumentException)
-    }
-
     def "convert delivery time"() {
         given: 'message received on specific date'
-        def message = Message.builder().type('1').date(1472238032937).build()
+        def message = new Message('1', 1472238032937)
 
         when: 'parsing message'
         def smsMessage = converter.process(message)
