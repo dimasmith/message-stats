@@ -7,4 +7,6 @@ public interface StatsService {
     SenderStats countByDirection();
 
     DayOfWeekStats calculateStatsByDayOfWeek();
+
+    MonthStats calculateStatsByMonth();
 }

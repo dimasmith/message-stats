@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ContextConfiguration
-class CountByDayOfWeekFeatureTest extends Specification {
+class CountByMonthFeatureTest extends Specification {
 
     @Autowired
     ImportJobLauncher messageImporter
@@ -41,17 +41,22 @@ class CountByDayOfWeekFeatureTest extends Specification {
         messageImporter.importMessages(sampleMessages.getURL().toExternalForm())
 
         when: 'get statistics from endpoint'
-        def response = mockMvc.perform(get('/v1/stats/byDayOfWeek').accept(APPLICATION_JSON_UTF8))
+        def response = mockMvc.perform(get('/v1/stats/byMonth').accept(APPLICATION_JSON_UTF8))
 
         then: 'statistics counted correctly'
         response.andExpect(status().isOk())
         def matcher = new JsonAsserts.StatEntrySeriesMatcher(response)
-        matcher.assertNextEntry('MONDAY', 3)
-        matcher.assertNextEntry('TUESDAY', 8)
-        matcher.assertNextEntry('WEDNESDAY', 3)
-        matcher.assertNextEntry('THURSDAY', 5)
-        matcher.assertNextEntry('FRIDAY', 4)
-        matcher.assertNextEntry('SATURDAY', 4)
-        matcher.assertNextEntry('SUNDAY', 0)
+        matcher.assertNextEntry('JANUARY', 0)
+        matcher.assertNextEntry('FEBRUARY', 0)
+        matcher.assertNextEntry('MARCH', 0)
+        matcher.assertNextEntry('APRIL', 0)
+        matcher.assertNextEntry('MAY', 0)
+        matcher.assertNextEntry('JUNE', 0)
+        matcher.assertNextEntry('JULY', 0)
+        matcher.assertNextEntry('AUGUST', 22)
+        matcher.assertNextEntry('SEPTEMBER', 5)
+        matcher.assertNextEntry('OCTOBER', 0)
+        matcher.assertNextEntry('NOVEMBER', 0)
+        matcher.assertNextEntry('DECEMBER', 0L)
     }
 }

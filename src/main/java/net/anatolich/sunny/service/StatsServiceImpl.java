@@ -33,4 +33,10 @@ public class StatsServiceImpl implements StatsService {
         return statsCalculator.calculateMessageCountByDayOfWeek(allMessages);
     }
 
+    @Override
+    public MonthStats calculateStatsByMonth() {
+        final Iterable<SmsMessage> allMessages = messageRepository.findAll();
+        return statsCalculator.calculateMessageCountByMonth(allMessages);
+    }
+
 }

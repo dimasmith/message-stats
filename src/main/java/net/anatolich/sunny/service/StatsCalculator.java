@@ -13,4 +13,10 @@ public interface StatsCalculator {
     }
 
     DayOfWeekStats calculateMessageCountByDayOfWeek(Stream<SmsMessage> messageStream);
+
+    default MonthStats calculateMessageCountByMonth(Iterable<SmsMessage> messages) {
+        return calculateMessageCountByMonth(StreamSupport.stream(messages.spliterator(), false));
+    }
+
+    MonthStats calculateMessageCountByMonth(Stream<SmsMessage> messageStream);
 }
