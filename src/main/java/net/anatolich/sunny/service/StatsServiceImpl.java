@@ -8,20 +8,16 @@ import net.anatolich.sunny.repository.SmsMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.DayOfWeek;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
 @Component
 public class StatsServiceImpl implements StatsService {
 
     private final SmsMessageRepository messageRepository;
+    private final StatsCalculator statsCalculator;
 
     @Autowired
-    public StatsServiceImpl(SmsMessageRepository messageRepository) {
+    public StatsServiceImpl(SmsMessageRepository messageRepository, StatsCalculator statsCalculator) {
         this.messageRepository = messageRepository;
+        this.statsCalculator = statsCalculator;
     }
 
     @Override
@@ -33,14 +29,8 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public DayOfWeekStats calculateStatsByDayOfWeek() {
-        final Stream<SmsMessage> messageStream = StreamSupport.stream(messageRepository.findAll().spliterator(), false);
-        final Map<DayOfWeek, Long> collect =
-                messageStream.collect(
-                        Collectors.groupingBy(
-                                message -> message.getDeliveryTime().getDayOfWeek(),
-                                Collectors.counting()
-                        ));
-
-        return DayOfWeekStats.of(collect);
+        final Iterable<SmsMessage> allMessages = messageRepository.findAll();
+        return statsCalculator.calculateMessageCountByDayOfWeek(allMessages);
     }
+
 }

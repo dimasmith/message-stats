@@ -1,36 +1,28 @@
 package net.anatolich.sunny.service
 
 import net.anatolich.sunny.Messages
-import net.anatolich.sunny.repository.SmsMessageRepository
 import net.anatolich.sunny.domain.DayOfWeekStats
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ContextConfiguration
+import net.anatolich.sunny.domain.Direction
+import net.anatolich.sunny.repository.SmsMessageRepository
 import spock.lang.Specification
 
 import java.time.DayOfWeek
 
-@SpringBootTest
-@ContextConfiguration
 class StatsServiceImplTest extends Specification {
 
-    @Autowired
-    SmsMessageRepository messageRepository
+    SmsMessageRepository stubRepository;
 
     StatsService statsService
 
     void setup() {
-        statsService = new StatsServiceImpl(messageRepository)
-        messageRepository.deleteAll()
+        stubRepository = Mock(SmsMessageRepository)
+        statsService = new StatsServiceImpl(stubRepository, new StreamingStatsCalculator())
     }
 
     def "count messages by sender"() {
-        given: 'messages are in repository'
-        def messages = [
-                Messages.createIncomingMessage(),
-                Messages.createOutgoingMessage(),
-                Messages.createIncomingMessage()]
-        messageRepository.save(messages)
+        given: 'repository counts messages by direction'
+        stubRepository.countByDirection(Direction.IN) >> 2
+        stubRepository.countByDirection(Direction.OUT) >> 1
 
         when: 'stats calculated'
         def directionStats = statsService.countByDirection()
@@ -41,18 +33,18 @@ class StatsServiceImplTest extends Specification {
     }
 
     def "count messages send by days of week"() {
-        given: 'messages are in repository'
+        given: 'messages sent on various weekdays'
         def messages = [
                 Messages.createMessageOn(DayOfWeek.FRIDAY),
                 Messages.createMessageOn(DayOfWeek.FRIDAY),
                 Messages.createMessageOn(DayOfWeek.SUNDAY),
                 Messages.createMessageOn(DayOfWeek.MONDAY)]
-        messageRepository.save(messages)
+        stubRepository.findAll() >> messages
 
         when: 'stats calculated'
         DayOfWeekStats stats = statsService.calculateStatsByDayOfWeek()
 
-        then: 'messages calculated by direction'
+        then: 'messages count for each week day calculated'
         stats.countMessagesOf(DayOfWeek.FRIDAY) == 2
         stats.countMessagesOf(DayOfWeek.SUNDAY) == 1
         stats.countMessagesOf(DayOfWeek.TUESDAY) == 0
