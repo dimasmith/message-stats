@@ -1,7 +1,8 @@
 package net.anatolich.sunny.rest;
 
 import net.anatolich.sunny.domain.DayOfWeekStats;
-import net.anatolich.sunny.domain.SenderStats;
+import net.anatolich.sunny.domain.MonthStats;
+import net.anatolich.sunny.domain.Stats;
 import net.anatolich.sunny.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +21,17 @@ public class StatsController {
     }
 
     @RequestMapping(path = "bySender", method = RequestMethod.GET)
-    public SenderStats byDirection() {
+    public Stats byDirection() {
         return statsService.countByDirection();
     }
 
     @RequestMapping(path = "byDayOfWeek", method = RequestMethod.GET)
     public DayOfWeekStats byDayOfWeek() {
         return statsService.calculateStatsByDayOfWeek();
+    }
+
+    @RequestMapping(path = "byMonth", method = RequestMethod.GET)
+    public MonthStats byMonth() {
+        return statsService.calculateStatsByMonth();
     }
 }
