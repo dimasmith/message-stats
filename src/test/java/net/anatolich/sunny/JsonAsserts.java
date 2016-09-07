@@ -17,8 +17,8 @@ public class JsonAsserts {
 
         public void assertEntry(int number, String category, Long value) throws Exception {
             this.resultActions
-                    .andExpect(jsonPath(String.format("$.stats[%d].category", number), Matchers.is(category)))
-                    .andExpect(jsonPath(String.format("$.stats[%d].value", number), Matchers.is(value.intValue())));
+                    .andExpect(jsonPath(String.format("$.dataSeries[%d].category", number), Matchers.is(category)))
+                    .andExpect(jsonPath(String.format("$.dataSeries[%d].value", number), Matchers.is(value.intValue())));
 
         }
 

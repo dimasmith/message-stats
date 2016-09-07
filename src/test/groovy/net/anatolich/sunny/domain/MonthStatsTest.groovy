@@ -1,6 +1,5 @@
 package net.anatolich.sunny.domain
 
-import net.anatolich.sunny.rest.StatsEntry
 import spock.lang.Specification
 
 import java.time.Month
@@ -35,10 +34,10 @@ class MonthStatsTest extends Specification {
         MonthStats stats = MonthStats.of(counts)
 
         when: 'building stats series'
-        List<StatsEntry> statsEntries = stats.getStats()
+        List<StatsEntry> dataSeries = stats.getDataSeries()
 
         then: 'series are present for all months'
-        statsEntries == [
+        dataSeries == [
                 new StatsEntry(Month.JANUARY.name(), 0L),
                 new StatsEntry(Month.FEBRUARY.name(), 0L),
                 new StatsEntry(Month.MARCH.name(), 0L),

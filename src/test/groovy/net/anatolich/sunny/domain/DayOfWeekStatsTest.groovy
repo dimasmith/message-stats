@@ -1,6 +1,5 @@
 package net.anatolich.sunny.domain
 
-import net.anatolich.sunny.rest.StatsEntry
 import spock.lang.Specification
 
 import java.time.DayOfWeek
@@ -32,10 +31,10 @@ class DayOfWeekStatsTest extends Specification {
 
         when: 'building stats series'
         DayOfWeekStats stats = DayOfWeekStats.of(weekdayStats)
-        List<StatsEntry> statstSeries = stats.getStats()
+        List<StatsEntry> dataSeries = stats.getDataSeries()
 
         then: 'series are present for all week days'
-        statstSeries == [
+        dataSeries == [
                 new StatsEntry(DayOfWeek.MONDAY.name(), 22L),
                 new StatsEntry(DayOfWeek.TUESDAY.name(), 11L),
                 new StatsEntry(DayOfWeek.WEDNESDAY.name(), 0L),

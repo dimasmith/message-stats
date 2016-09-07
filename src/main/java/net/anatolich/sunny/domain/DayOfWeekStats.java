@@ -1,27 +1,37 @@
 package net.anatolich.sunny.domain;
 
-import lombok.Value;
-import net.anatolich.sunny.rest.StatsEntry;
-
 import java.time.DayOfWeek;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-@Value
-public class DayOfWeekStats {
+public class DayOfWeekStats extends AbstractStats<DayOfWeek> {
 
     private final Map<DayOfWeek, Long> data;
     private final List<StatsEntry> stats;
 
     private DayOfWeekStats(Map<DayOfWeek, Long> data) {
         this.data = data;
-        this.stats = Arrays.stream(DayOfWeek.values())
-                .map(dayOfWeek -> new StatsEntry(dayOfWeek.name(), countMessagesOf(dayOfWeek)))
-                .collect(Collectors.toList());
+        this.stats = createDataSeries();
+    }
+
+    @Override
+    public List<StatsEntry> getDataSeries() {
+        return stats;
     }
 
     public static DayOfWeekStats of(Map<DayOfWeek, Long> statMap) {
         return new DayOfWeekStats(statMap);
+    }
+
+    @Override
+    protected String getCategoryName(DayOfWeek dayOfWeek) {
+        return dayOfWeek.name();
+    }
+
+    @Override
+    protected List<DayOfWeek> createCategories() {
+        return Arrays.asList(DayOfWeek.values());
     }
 
     public long countMessagesOf(DayOfWeek dayOfWeek) {

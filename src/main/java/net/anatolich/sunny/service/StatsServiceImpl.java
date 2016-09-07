@@ -18,7 +18,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public SenderStats countByDirection() {
+    public Stats countByDirection() {
         final int incoming = messageRepository.countByDirection(Direction.IN);
         final int outgoing = messageRepository.countByDirection(Direction.OUT);
         return new SenderStats(incoming, outgoing);

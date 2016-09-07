@@ -1,11 +1,9 @@
 package net.anatolich.sunny.domain;
 
-import net.anatolich.sunny.rest.StatsEntry;
-
 import java.util.Arrays;
 import java.util.List;
 
-public class SenderStats {
+public class SenderStats extends AbstractStats<Direction> {
 
     private final int incoming;
     private final int outgoing;
@@ -14,15 +12,15 @@ public class SenderStats {
     public SenderStats(int incoming, int outgoing) {
         this.incoming = incoming;
         this.outgoing = outgoing;
-        this.stats = Arrays.asList(
-                new StatsEntry(Direction.IN.name(), incoming),
-                new StatsEntry(Direction.OUT.name(), outgoing));
+        this.stats = createDataSeries();
     }
 
-    public List<StatsEntry> getStats() {
+    @Override
+    public List<StatsEntry> getDataSeries() {
         return stats;
     }
 
+    @Override
     public long countMessagesOf(Direction direction) {
         switch (direction) {
             case IN:
@@ -34,4 +32,13 @@ public class SenderStats {
         }
     }
 
+    @Override
+    protected String getCategoryName(Direction direction) {
+        return direction.name();
+    }
+
+    @Override
+    protected List<Direction> createCategories() {
+        return Arrays.asList(Direction.IN, Direction.OUT);
+    }
 }

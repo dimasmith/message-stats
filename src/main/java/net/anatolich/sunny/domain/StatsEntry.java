@@ -1,4 +1,4 @@
-package net.anatolich.sunny.rest;
+package net.anatolich.sunny.domain;
 
 import lombok.Value;
 
