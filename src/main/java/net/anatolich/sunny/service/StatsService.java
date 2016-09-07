@@ -1,5 +1,6 @@
 package net.anatolich.sunny.service;
 
+import net.anatolich.sunny.domain.MonthStats;
 import net.anatolich.sunny.domain.SenderStats;
 import net.anatolich.sunny.domain.DayOfWeekStats;
 

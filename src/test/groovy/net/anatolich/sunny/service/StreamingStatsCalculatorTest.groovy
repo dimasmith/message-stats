@@ -2,6 +2,7 @@ package net.anatolich.sunny.service
 
 import net.anatolich.sunny.Messages
 import net.anatolich.sunny.domain.DayOfWeekStats
+import net.anatolich.sunny.domain.MonthStats
 import net.anatolich.sunny.domain.SmsMessage
 import spock.lang.Specification
 

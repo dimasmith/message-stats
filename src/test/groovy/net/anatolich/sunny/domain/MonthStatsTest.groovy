@@ -1,4 +1,4 @@
-package net.anatolich.sunny.service
+package net.anatolich.sunny.domain
 
 import net.anatolich.sunny.rest.StatsEntry
 import spock.lang.Specification

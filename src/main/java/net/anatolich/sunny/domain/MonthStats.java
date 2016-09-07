@@ -1,4 +1,4 @@
-package net.anatolich.sunny.service;
+package net.anatolich.sunny.domain;
 
 import net.anatolich.sunny.rest.StatsEntry;
 
@@ -17,7 +17,7 @@ public class MonthStats {
     private MonthStats(Map<Month, Long> data) {
         this.data = Collections.unmodifiableMap(data);
         this.stats = Arrays.stream(Month.values())
-                .map(month -> new StatsEntry(month.name(), data.getOrDefault(month, 0L)))
+                .map(month -> new StatsEntry(month.name(), countMessagesOf(month)))
                 .collect(Collectors.toList());
     }
 

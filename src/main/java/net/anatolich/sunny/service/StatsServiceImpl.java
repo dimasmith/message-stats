@@ -1,9 +1,6 @@
 package net.anatolich.sunny.service;
 
-import net.anatolich.sunny.domain.DayOfWeekStats;
-import net.anatolich.sunny.domain.Direction;
-import net.anatolich.sunny.domain.SenderStats;
-import net.anatolich.sunny.domain.SmsMessage;
+import net.anatolich.sunny.domain.*;
 import net.anatolich.sunny.repository.SmsMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
