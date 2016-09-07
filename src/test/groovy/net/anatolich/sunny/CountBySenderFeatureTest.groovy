@@ -47,9 +47,10 @@ class CountBySenderFeatureTest extends Specification {
         def response = mockMvc.perform(get('/v1/stats/bySender').accept(APPLICATION_JSON_UTF8))
 
         then: 'statistics counted correctly'
-        response
-            .andExpect(status().isOk())
-            .andExpect(jsonPath('incoming', Matchers.is(15)))
-            .andExpect(jsonPath('outgoing', Matchers.is(12)))
+        response.andExpect(status().isOk())
+
+        def matcher = new JsonAsserts.StatEntrySeriesMatcher(response)
+        matcher.assertNextEntry('IN', 15)
+        matcher.assertNextEntry('OUT', 12)
     }
 }

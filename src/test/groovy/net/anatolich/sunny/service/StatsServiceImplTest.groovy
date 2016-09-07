@@ -28,8 +28,8 @@ class StatsServiceImplTest extends Specification {
         def directionStats = statsService.countByDirection()
 
         then: 'messages calculated by direction'
-        directionStats.incoming == 2
-        directionStats.outgoing == 1
+        directionStats.countMessagesOf(Direction.IN) == 2
+        directionStats.countMessagesOf(Direction.OUT) == 1
     }
 
     def "count messages send by days of week"() {
