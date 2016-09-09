@@ -49,3 +49,7 @@ dependencies {
     testCompile('org.springframework.batch:spring-batch-test')
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+}
+
