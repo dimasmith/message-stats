@@ -41,4 +41,23 @@ public class SenderStats extends AbstractStats<Direction> {
     protected List<Direction> createCategories() {
         return Arrays.asList(Direction.IN, Direction.OUT);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SenderStats that = (SenderStats) o;
+
+        if (incoming != that.incoming) return false;
+        return outgoing == that.outgoing;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = incoming;
+        result = 31 * result + outgoing;
+        return result;
+    }
 }
