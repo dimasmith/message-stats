@@ -1,6 +1,5 @@
 package net.anatolich.sunny.rest;
 
-import net.anatolich.sunny.batch.ImportJobLauncher;
 import net.anatolich.sunny.domain.SenderStats;
 import net.anatolich.sunny.service.StatsService;
 import org.hamcrest.Matchers;
@@ -12,8 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,9 +23,6 @@ public class StatsControllerTest {
 
     @MockBean
     StatsService statsService;
-
-    @MockBean
-    ImportJobLauncher importJobLauncher; // TODO: not needed. Replace with configuration
 
     @Autowired
     MockMvc mockMvc;

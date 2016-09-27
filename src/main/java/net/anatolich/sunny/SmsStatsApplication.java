@@ -15,7 +15,7 @@ public class SmsStatsApplication implements CommandLineRunner {
 
     @Value("${import.url:}")
     private String importUrl;
-    @Autowired
+    @Autowired(required = false)
     private ImportJobLauncher importJobLauncher;
 
     public static void main(String[] args) {
@@ -24,7 +24,7 @@ public class SmsStatsApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (!importUrl.isEmpty()) {
+        if ( importJobLauncher != null && !importUrl.isEmpty()) {
             importJobLauncher.importMessages(importUrl);
         }
     }

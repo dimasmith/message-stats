@@ -10,6 +10,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,5 +80,11 @@ public class MessageImportJobConfiguration {
                 .end()
                 .build();
     }
+
+    @Bean
+    public ImportJobLauncher importJobLauncher(JobLauncher jobLauncher) {
+        return new ImportJobLauncher(jobLauncher, importMessagesJob());
+    }
+
 
 }

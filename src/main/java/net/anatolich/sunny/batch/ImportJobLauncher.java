@@ -10,12 +10,10 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.time.Instant;
 
-@Component
 public class ImportJobLauncher {
 
     private final JobLauncher jobLauncher;
